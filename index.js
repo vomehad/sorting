@@ -1,46 +1,59 @@
 const ERROR_SHORT = 'too short';
 
+let generated = [];
 let button = document.getElementsByTagName('button');
+let deff = defaultGenerate();
 
 button[0].onclick = () => {
     let min = Number(document.getElementById('input_go').value);
+    min = min != "" ? min : deff;
+
     let max = Number(document.getElementById('input_end').value);
+    max = max != "" ? max : (deff + 4);
 
-    let sourceArray = document.getElementsByClassName('value_source_p')[0];
     let generatedArray = document.getElementsByClassName('value_generate_p')[0];
-
     let input = getInputArray(min, max);
-    sourceArray.innerHTML = input;
 
     generated = generateArray(input);
     generatedArray.innerHTML = generated;
 }
 
 button[1].onclick = () => {
+    if (generated.length == 0) {
+        return alert('generate array before');
+    }
     let elems = generated.length;
-    let u = 0;
     let flag = true;
+    let div = document.createElement('div');
 
     while (flag) {
-        let y = 0;
-        u++;
-
         flag = false;
         for (let i = 0; i < (elems - 1); i++) {
-            console.log('step ' + u + '.' + ++y, generated);
-
             if (generated[i] > generated[i + 1]) {
-                console.log(generated[i] + ' > ' + generated[i + 1]);
+                let p = document.createElement('p');
+                p.className = "shuffling";
+                p.innerHTML = generated[i] + ' > ' + generated[i + 1];
+                p.append(' - shuffling');
+
+                document.body.append(p);
+
                 flag = true;
-                console.log('shuffle');
                 reshuffle(generated, i);
             } else {
-                console.log(generated[i] + ' < ' + generated[i + 1]);
-                console.log('ok');
+                let p = document.createElement('p');
+                p.className = "sort_yet";
+                p.innerHTML = generated[i] + ' < ' + generated[i + 1];
+                p.append(' - ok');
+
+                document.body.append(p);
             }
         }
     }
-    console.log('sorted');
+    let p = document.createElement('p');
+    p.className = "sorted";
+    p.innerHTML = generated + " - sorted";
+
+    document.body.append(p);
 }
 
 function reshuffle(array, baseIndex) {
@@ -73,4 +86,8 @@ function generateArray(source) {
         source.splice(index, 1);
     }
     return gener;
+}
+
+function defaultGenerate() {
+    return Math.floor(Math.random() * 9);
 }
