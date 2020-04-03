@@ -1,8 +1,8 @@
 const ERROR_SHORT = 'too short';
 
-let button = document.getElementsByTagName('button')[0];
+let button = document.getElementsByTagName('button');
 
-button.onclick = () => {
+button[0].onclick = () => {
     let min = Number(document.getElementById('input_go').value);
     let max = Number(document.getElementById('input_end').value);
 
@@ -12,12 +12,54 @@ button.onclick = () => {
     let input = getInputArray(min, max);
     sourceArray.innerHTML = input;
 
-    let generated = generateArray(input);
+    generated = generateArray(input);
     generatedArray.innerHTML = generated;
+}
+
+button[1].onclick = () => {
+    let elems = generated.length;
+    let u = 0;
+    let flag = true;
+
+    while (flag) {
+        let y = 0;
+
+        // debug zone
+        u++;
+        // console.log('step ' + u, generated);
+
+        flag = false;
+        for (let i = 0; i < (elems - 1); i++) {
+            console.log('step ' + u + '.' + ++y, generated);
+
+            if (generated[i] > generated[i + 1]) {
+                console.log(generated[i] + ' > ' + generated[i + 1]);
+                flag = true;
+                console.log('shuffle');
+                reshuffle(generated, i);
+            } else {
+                console.log(generated[i] + ' < ' + generated[i + 1]);
+                console.log('ok');
+            }
+        }
+
+        // debug zone
+        if (u == 56) {
+            flag = false;
+        }
+    }
+    console.log('sorted');
+}
+
+function reshuffle(array, baseIndex) {
+    [array[baseIndex], array[baseIndex + 1]] = [array[baseIndex + 1], array[baseIndex]];
+
+    return array;
 }
 
 function checkInputValues(min, max) {
     if (max <= min) {
+
         return alert(ERROR_SHORT);
     }
 }
@@ -32,13 +74,11 @@ function getInputArray(min, max) {
 }
 
 function generateArray(source) {
-    console.log(source);
     let gener = [];
     while (source.length > 0) {
         let index = Math.floor(Math.random() * Math.floor(source.length));
         gener.push(source[index]);
         source.splice(index, 1);
     }
-    console.log(gener);
     return gener;
 }
