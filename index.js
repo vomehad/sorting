@@ -23,10 +23,7 @@ button[1].onclick = () => {
 
     while (flag) {
         let y = 0;
-
-        // debug zone
         u++;
-        // console.log('step ' + u, generated);
 
         flag = false;
         for (let i = 0; i < (elems - 1); i++) {
@@ -41,11 +38,6 @@ button[1].onclick = () => {
                 console.log(generated[i] + ' < ' + generated[i + 1]);
                 console.log('ok');
             }
-        }
-
-        // debug zone
-        if (u == 56) {
-            flag = false;
         }
     }
     console.log('sorted');
