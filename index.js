@@ -5,10 +5,10 @@ let button = document.getElementsByTagName('button');
 let deff = defaultGenerate();
 
 button[0].onclick = () => {
-    let min = Number(document.getElementById('input_go').value);
+    let min = +document.getElementById('input_go').value;
     min = min != "" ? min : deff;
 
-    let max = Number(document.getElementById('input_end').value);
+    let max = +document.getElementById('input_end').value;
     max = max != "" ? max : (deff + 4);
 
     let generatedArray = document.getElementsByClassName('value_generate_p')[0];
