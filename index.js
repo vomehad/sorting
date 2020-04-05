@@ -1,6 +1,8 @@
-const ERROR_SHORT = 'Минимально число больше'; // минимальное число больше максимального
 const DEMO_LENGTH = 4; // длина демо массива
 const DEFAULT_MIN = defaultGenerate(); // начало демо массива
+const SHUFFLE = "переставляем"; // операция: переставить элементы
+const BUBBLE_OK = "не переставляем"; // операция: не переставлять элементы
+const SORTED = "отсортировано"; // завершение сортировки
 
 let generated = []; // по кнопке create здесь будет "перемешаный" исходный массив
 
@@ -8,71 +10,62 @@ initButtons(); // "берём" кнопки
 
 create.onclick = () => { // кнопка создать
     let min = +document.getElementById('input-go').value; // "забираем" минимальное число
-    console.log('min', min)
-        // min = min != "" ? min : DEFAULT_MIN; // демо минимальное число
-    min = demoMin(min);
-    console.log('min demo', min)
-
+    min = demoMin(min); // исключаем некорректные значения (демо-режим)
 
     let max = +document.getElementById('input-end').value; // "забираем" максимальное число
-    console.log('max', max)
-        // max = max != "" ? max : min + DEMO_LENGTH; // демо максимальное число
-    max = demoMax(min, max);
-    console.log('max demo', max)
+    max = demoMax(min, max); // исключаем некорректные значения (демо-режим)
 
+    let generatedArray = document.getElementsByClassName('value-gen-p')[0]; // берем абзац для вставки (удалить)
+    let input = getInputArray(min, max); // создаём массив чисел из промежутка от min до max
+    let div = document.createElement('div'); // div где окажется "перемеаный" массив
+    div.className = "gen"; // класс для css
 
-    let generatedArray = document.getElementsByClassName('value-gen-p')[0];
-    let input = getInputArray(min, max);
-    let div = document.createElement('div');
-    div.className = "gen";
-
-    generated = generateArray(input);
-    generatedArray.innerHTML = generated;
+    generated = generateArray(input); // "перемешаный" массив
+    generatedArray.innerHTML = generated; // вставляем "перемешаный" массив в абзац (удалить)
 }
 
-bubbleSort.onclick = () => {
-    if (generated.length == 0) {
-        return alert('сначала создайте массив');
+bubbleSort.onclick = () => { // кнопка пузырьковая сортировка
+    if (generated.length == 0) { // если забыли создать исходный массив
+        return alert('сначала создайте массив'); // создайте его
     }
-    let elems = generated.length;
-    let needSort = true;
-    let div = document.createElement('div');
-    div.className = "sort-log";
+    let elems = generated.length; // колличество элементов в исходном массве
+    let needSort = true; // флаг для проходов сортировки
+    let div = document.createElement('div'); // ход сортировки
+    div.className = "sort-log"; // класс для css
 
-    while (needSort) {
-        let ul = document.createElement('ul');
-        ul.className = "sort-iter";
+    while (needSort) { // непосредственно сортировка
+        let ul = document.createElement('ul'); // проход сортировки
+        ul.className = "sort-iter"; // класс для css
 
-        needSort = false;
-        for (let i = 0; i < (elems - 1); i++) {
-            if (generated[i] > generated[i + 1]) {
-                let li = document.createElement('li');
-                li.className = "shuffling";
-                li.innerHTML = generated[i] + ' > ' + generated[i + 1];
-                li.append(' - переставляем');
+        needSort = false; // флаг для проходов сортировки
+        for (let i = 0; i < (elems - 1); i++) { // этапы прохода
+            if (generated[i] > generated[i + 1]) { // нужно ли переставить эементы?
+                let li = document.createElement('li'); // вывод этапа
+                li.className = "shuffling"; // класс для css
+                li.innerHTML = generated[i] + ' > ' + generated[i + 1]; // вставим значение этапа
+                li.append(' - ' + SHUFFLE); // имя операции
 
-                ul.append(li);
+                ul.append(li); // вставим этап в проход
 
-                needSort = true;
-                reshuffle(generated, i);
+                needSort = true; // флаг для проходов сортировки
+                reshuffle(generated, i); // непосредственно перестановка
             } else {
-                let li = document.createElement('li');
-                li.className = "sort-yet";
-                li.innerHTML = generated[i] + ' < ' + generated[i + 1];
-                li.append(' - ok');
+                let li = document.createElement('li'); // вывод этапа
+                li.className = "sort-yet"; // класс для css
+                li.innerHTML = generated[i] + ' < ' + generated[i + 1]; // вставим значение этапа
+                li.append(' - ' + BUBBLE_OK); // имя операции
 
-                ul.append(li);
+                ul.append(li); // вставим этап в проход
             }
-            div.append(ul)
+            div.append(ul); // конец прохода
         }
     }
-    let liEnd = document.createElement('li');
-    liEnd.className = "sorted";
-    liEnd.innerHTML = generated + " - sorted";
-    // ul.append(liEnd);
-    div.append(liEnd);
+    let liEnd = document.createElement('li'); // вывод об окончании сортировки
+    liEnd.className = "sorted"; // класс для css
+    liEnd.innerHTML = generated + " - " + SORTED; // конец ортировки
+    div.append(liEnd); // конец сортировки
 
-    document.body.append(div);
+    document.body.append(div); // вывод хода сортировки
 }
 
 function initButtons() {
@@ -89,15 +82,7 @@ function reshuffle(array, baseIndex) {
     return array;
 }
 
-function checkInputValues(min, max) {
-    if (max <= min) {
-
-        return alert(ERROR_SHORT);
-    }
-}
-
 function getInputArray(min, max) {
-    checkInputValues(min, max);
     let input = [];
     for (let i = min; i <= max; i++) {
         input.push(i);
@@ -120,17 +105,17 @@ function defaultGenerate() {
 }
 
 function demoMin(min = 0) {
-    if (min === 0) {
+    if (+min === 0 || isNaN(min)) {
         min = DEFAULT_MIN;
     }
     return min;
 }
 
 function demoMax(min = 0, max = 0) {
-    if (min === 0) {
+    if (+min === 0) {
         min = DEFAULT_MIN;
     }
-    if (max < min) {
+    if (+max < min || isNaN(max)) {
         max = min + DEMO_LENGTH;
     }
     return max;
