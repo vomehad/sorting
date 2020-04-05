@@ -16,17 +16,22 @@
     width: 38px;
 }
 
+.sort-log {
+    border: 8px solid rgb(126, 136, 129);
+    border-radius: 19px;
+}
+
 .shuffling {
-    background-color: firebrick;
+    background-color: rgba(212, 2, 2, 0.8);
     width: 24%;
 }
 
 .sort-yet {
-    background-color: goldenrod;
+    background-color: rgba(189, 101, 0, 0.8);
     width: 24%;
 }
 
 .sorted {
-    background-color: chartreuse;
+    background-color: rgba(23, 197, 0, 0.8);
     width: 24%;
 }

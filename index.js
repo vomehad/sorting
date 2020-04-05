@@ -1,59 +1,86 @@
-const ERROR_SHORT = 'too short';
+const ERROR_SHORT = 'Минимально число больше'; // минимальное число больше максимального
+const DEMO_LENGTH = 4; // длина демо массива
+const DEFAULT_MIN = defaultGenerate(); // начало демо массива
 
-let generated = [];
-let button = document.getElementsByTagName('button');
-let deff = defaultGenerate();
+let generated = []; // по кнопке create здесь будет "перемешаный" исходный массив
 
-button[0].onclick = () => {
-    let min = +document.getElementById('input-go').value;
-    min = min != "" ? min : deff;
+initButtons(); // "берём" кнопки
 
-    let max = +document.getElementById('input-end').value;
-    max = max != "" ? max : (deff + 4);
+create.onclick = () => { // кнопка создать
+    let min = +document.getElementById('input-go').value; // "забираем" минимальное число
+    console.log('min', min)
+        // min = min != "" ? min : DEFAULT_MIN; // демо минимальное число
+    min = demoMin(min);
+    console.log('min demo', min)
+
+
+    let max = +document.getElementById('input-end').value; // "забираем" максимальное число
+    console.log('max', max)
+        // max = max != "" ? max : min + DEMO_LENGTH; // демо максимальное число
+    max = demoMax(min, max);
+    console.log('max demo', max)
+
 
     let generatedArray = document.getElementsByClassName('value-gen-p')[0];
     let input = getInputArray(min, max);
+    let div = document.createElement('div');
+    div.className = "gen";
 
     generated = generateArray(input);
     generatedArray.innerHTML = generated;
 }
 
-button[1].onclick = () => {
+bubbleSort.onclick = () => {
     if (generated.length == 0) {
         return alert('сначала создайте массив');
     }
     let elems = generated.length;
-    let flag = true;
+    let needSort = true;
     let div = document.createElement('div');
+    div.className = "sort-log";
 
-    while (flag) {
-        flag = false;
+    while (needSort) {
+        let ul = document.createElement('ul');
+        ul.className = "sort-iter";
+
+        needSort = false;
         for (let i = 0; i < (elems - 1); i++) {
             if (generated[i] > generated[i + 1]) {
-                let p = document.createElement('p');
-                p.className = "shuffling";
-                p.innerHTML = generated[i] + ' > ' + generated[i + 1];
-                p.append(' - переставляем');
+                let li = document.createElement('li');
+                li.className = "shuffling";
+                li.innerHTML = generated[i] + ' > ' + generated[i + 1];
+                li.append(' - переставляем');
 
-                document.body.append(p);
+                ul.append(li);
 
-                flag = true;
+                needSort = true;
                 reshuffle(generated, i);
             } else {
-                let p = document.createElement('p');
-                p.className = "sort-yet";
-                p.innerHTML = generated[i] + ' < ' + generated[i + 1];
-                p.append(' - ok');
+                let li = document.createElement('li');
+                li.className = "sort-yet";
+                li.innerHTML = generated[i] + ' < ' + generated[i + 1];
+                li.append(' - ok');
 
-                document.body.append(p);
+                ul.append(li);
             }
+            div.append(ul)
         }
     }
-    let p = document.createElement('p');
-    p.className = "sorted";
-    p.innerHTML = generated + " - sorted";
+    let liEnd = document.createElement('li');
+    liEnd.className = "sorted";
+    liEnd.innerHTML = generated + " - sorted";
+    // ul.append(liEnd);
+    div.append(liEnd);
 
-    document.body.append(p);
+    document.body.append(div);
+}
+
+function initButtons() {
+    let buttons = document.getElementsByTagName('button');
+
+    create = buttons[0];
+    bubbleSort = buttons[1];
+    clear = buttons[2];
 }
 
 function reshuffle(array, baseIndex) {
@@ -90,4 +117,21 @@ function generateArray(source) {
 
 function defaultGenerate() {
     return Math.floor(Math.random() * 9);
+}
+
+function demoMin(min = 0) {
+    if (min === 0) {
+        min = DEFAULT_MIN;
+    }
+    return min;
+}
+
+function demoMax(min = 0, max = 0) {
+    if (min === 0) {
+        min = DEFAULT_MIN;
+    }
+    if (max < min) {
+        max = min + DEMO_LENGTH;
+    }
+    return max;
 }

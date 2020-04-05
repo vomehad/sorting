@@ -5,14 +5,15 @@ html {
 }
 
 body {
-    background-color: rgb(4, 14, 26);
+    background-color: rgba(1, 27, 71, 0.699);
     margin: 60px;
     color: blanchedalmond;
 }
 
 button {
     width: 100px;
-    height: 40px;
+    height: 36px;
     background-color: indigo;
     color: azure;
+    border-radius: 7px;
 }
