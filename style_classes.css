@@ -1,20 +1,18 @@
-body {
-    background-color: lightsteelblue;
-    padding: 0%;
+/* Classes */
+
+.clear-btn {
+    color: azure;
 }
 
-.input_value {
-    background-color: aquamarine;
-    width: 60%;
-    height: 55px;
-    align-self: center;
+.input-value p {
+    font-size: 24px;
 }
 
-.input_go {
+.input-go {
     width: 38px;
 }
 
-.input_end {
+.input-end {
     width: 38px;
 }
 
@@ -23,7 +21,7 @@ body {
     width: 24%;
 }
 
-.sort_yet {
+.sort-yet {
     background-color: goldenrod;
     width: 24%;
 }

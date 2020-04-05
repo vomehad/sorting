@@ -5,13 +5,13 @@ let button = document.getElementsByTagName('button');
 let deff = defaultGenerate();
 
 button[0].onclick = () => {
-    let min = +document.getElementById('input_go').value;
+    let min = +document.getElementById('input-go').value;
     min = min != "" ? min : deff;
 
-    let max = +document.getElementById('input_end').value;
+    let max = +document.getElementById('input-end').value;
     max = max != "" ? max : (deff + 4);
 
-    let generatedArray = document.getElementsByClassName('value_generate_p')[0];
+    let generatedArray = document.getElementsByClassName('value-gen-p')[0];
     let input = getInputArray(min, max);
 
     generated = generateArray(input);
@@ -20,7 +20,7 @@ button[0].onclick = () => {
 
 button[1].onclick = () => {
     if (generated.length == 0) {
-        return alert('generate array before');
+        return alert('сначала создайте массив');
     }
     let elems = generated.length;
     let flag = true;
@@ -33,7 +33,7 @@ button[1].onclick = () => {
                 let p = document.createElement('p');
                 p.className = "shuffling";
                 p.innerHTML = generated[i] + ' > ' + generated[i + 1];
-                p.append(' - shuffling');
+                p.append(' - переставляем');
 
                 document.body.append(p);
 
@@ -41,7 +41,7 @@ button[1].onclick = () => {
                 reshuffle(generated, i);
             } else {
                 let p = document.createElement('p');
-                p.className = "sort_yet";
+                p.className = "sort-yet";
                 p.innerHTML = generated[i] + ' < ' + generated[i + 1];
                 p.append(' - ok');
 
