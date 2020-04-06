@@ -1,8 +1,7 @@
 const DEMO_LENGTH = 7; // длина демо массива
 const DEFAULT_MIN = demoValue(); // начало демо массива
-const SHUFFLE = "переставить"; // операция: переставить элементы
-const BUBBLE_OK = "не переставлять"; // операция: не переставлять элементы
-const SORTED = "отсортировно"; // завершение сортировки
+
+let generated = [];
 
 initButtons(); // "берём" кнопки
 
@@ -14,15 +13,12 @@ create.onclick = () => { // кнопка создать
     min = demoMin(inputValues); // исключаем некорректные значения (демо-режим)
     max = demoMax(inputValues, min); // исключаем некорректные значения (демо-режим)
     generated = generateArray(getSourceArray(min, max)); // "перемешаный" массив
-    console.log(min, max, generated)
 
     elemInDiv(div);
 }
 
 bubbleSort.onclick = () => { // кнопка пузырьковая сортировка
-    if (generated.length == 0) { // если забыли создать исходный массив
-        return alert('сначала создайте массив'); // создайте его
-    }
+    checkQueue();
     let elems = generated.length; // колличество элементов в исходном массве
     let needSort = true; // флаг для проходов сортировки
     let div = document.getElementById('result'); // ход сортировки
@@ -34,20 +30,10 @@ bubbleSort.onclick = () => { // кнопка пузырьковая сортир
         needSort = false; // флаг для проходов сортировки
         for (let i = 0; i < (elems - 1); i++) { // этапы прохода
             if (generated[i] > generated[i + 1]) { // нужно ли переставить элементы?
-                let li = document.createElement('li'); // вывод этапа
-                li.className = "shuffling"; // класс для css
-                li.innerHTML = generated[i] + ' > ' + generated[i + 1]; // вставим значение этапа
-
-                ul.append(li); // вставим этап в проход
-
-                needSort = true; // флаг для проходов сортировки
-                reshuffle(generated, i); // непосредственно перестановка
+                needSort = true;
+                sorting(ul, i, needSort);
             } else {
-                let li = document.createElement('li'); // вывод этапа
-                li.className = "sort-yet"; // класс для css
-                li.innerHTML = generated[i] + ' < ' + generated[i + 1]; // вставим значение этапа
-
-                ul.append(li); // вставим этап в проход
+                sorting(ul, i);
             }
             div.append(ul); // конец прохода
         }
@@ -56,6 +42,20 @@ bubbleSort.onclick = () => { // кнопка пузырьковая сортир
     end.className = "sorted"; // класс для css
 
     elemInDiv(div);
+}
+
+function sorting(ul, i, need = false) {
+    let li = document.createElement('li'); // вывод этапа
+    if (need) {
+        reshuffle(generated, i); // непосредственно перестановка
+
+        li.className = "shuffling";
+        li.innerHTML = generated[i] + ' > ' + generated[i + 1];
+    } else {
+        li.className = "sort-yet"; // класс для css
+        li.innerHTML = generated[i] + ' < ' + generated[i + 1];
+    }
+    ul.append(li); // вставим этап в проход
 }
 
 clear.onclick = () => {
@@ -138,5 +138,11 @@ function demoMax(input, min = 0) {
 function recreateArray(result) {
     while (result.firstChild) {
         result.removeChild(result.firstChild);
+    }
+}
+
+function checkQueue() {
+    if (generated.length == 0) { // если забыли создать исходный массив
+        return alert('сначала создайте массив'); // создайте его
     }
 }
