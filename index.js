@@ -1,27 +1,22 @@
-const DEMO_LENGTH = 4; // длина демо массива
-const DEFAULT_MIN = defaultGenerate(); // начало демо массива
-const SHUFFLE = "переставляем"; // операция: переставить элементы
-const BUBBLE_OK = "не переставляем"; // операция: не переставлять элементы
-const SORTED = "отсортировано"; // завершение сортировки
-
-let generated = []; // по кнопке create здесь будет "перемешаный" исходный массив
+const DEMO_LENGTH = 7; // длина демо массива
+const DEFAULT_MIN = demoValue(); // начало демо массива
+const SHUFFLE = "переставить"; // операция: переставить элементы
+const BUBBLE_OK = "не переставлять"; // операция: не переставлять элементы
+const SORTED = "отсортировно"; // завершение сортировки
 
 initButtons(); // "берём" кнопки
 
 create.onclick = () => { // кнопка создать
-    let min = +document.getElementById('input-go').value; // "забираем" минимальное число
-    min = demoMin(min); // исключаем некорректные значения (демо-режим)
+    let inputValues = document.getElementsByTagName('input');
+    let div = document.getElementById('result');
+    recreateArray(div);
 
-    let max = +document.getElementById('input-end').value; // "забираем" максимальное число
-    max = demoMax(min, max); // исключаем некорректные значения (демо-режим)
+    min = demoMin(inputValues); // исключаем некорректные значения (демо-режим)
+    max = demoMax(inputValues, min); // исключаем некорректные значения (демо-режим)
+    generated = generateArray(getSourceArray(min, max)); // "перемешаный" массив
+    console.log(min, max, generated)
 
-    let generatedArray = document.getElementsByClassName('value-gen-p')[0]; // берем абзац для вставки (удалить)
-    let input = getInputArray(min, max); // создаём массив чисел из промежутка от min до max
-    let div = document.createElement('div'); // div где окажется "перемеаный" массив
-    div.className = "gen"; // класс для css
-
-    generated = generateArray(input); // "перемешаный" массив
-    generatedArray.innerHTML = generated; // вставляем "перемешаный" массив в абзац (удалить)
+    elemInDiv(div);
 }
 
 bubbleSort.onclick = () => { // кнопка пузырьковая сортировка
@@ -30,8 +25,7 @@ bubbleSort.onclick = () => { // кнопка пузырьковая сортир
     }
     let elems = generated.length; // колличество элементов в исходном массве
     let needSort = true; // флаг для проходов сортировки
-    let div = document.createElement('div'); // ход сортировки
-    div.className = "sort-log"; // класс для css
+    let div = document.getElementById('result'); // ход сортировки
 
     while (needSort) { // непосредственно сортировка
         let ul = document.createElement('ul'); // проход сортировки
@@ -39,11 +33,10 @@ bubbleSort.onclick = () => { // кнопка пузырьковая сортир
 
         needSort = false; // флаг для проходов сортировки
         for (let i = 0; i < (elems - 1); i++) { // этапы прохода
-            if (generated[i] > generated[i + 1]) { // нужно ли переставить эементы?
+            if (generated[i] > generated[i + 1]) { // нужно ли переставить элементы?
                 let li = document.createElement('li'); // вывод этапа
                 li.className = "shuffling"; // класс для css
                 li.innerHTML = generated[i] + ' > ' + generated[i + 1]; // вставим значение этапа
-                li.append(' - ' + SHUFFLE); // имя операции
 
                 ul.append(li); // вставим этап в проход
 
@@ -53,19 +46,24 @@ bubbleSort.onclick = () => { // кнопка пузырьковая сортир
                 let li = document.createElement('li'); // вывод этапа
                 li.className = "sort-yet"; // класс для css
                 li.innerHTML = generated[i] + ' < ' + generated[i + 1]; // вставим значение этапа
-                li.append(' - ' + BUBBLE_OK); // имя операции
 
                 ul.append(li); // вставим этап в проход
             }
             div.append(ul); // конец прохода
         }
     }
-    let liEnd = document.createElement('li'); // вывод об окончании сортировки
-    liEnd.className = "sorted"; // класс для css
-    liEnd.innerHTML = generated + " - " + SORTED; // конец ортировки
-    div.append(liEnd); // конец сортировки
+    let end = document.createElement('div'); // вывод об окончании сортировки
+    end.className = "sorted"; // класс для css
 
-    document.body.append(div); // вывод хода сортировки
+    elemInDiv(div);
+}
+
+clear.onclick = () => {
+    let trash = document.getElementById('result');
+
+    while (trash.firstChild) {
+        trash.removeChild(trash.firstChild);
+    }
 }
 
 function initButtons() {
@@ -76,13 +74,27 @@ function initButtons() {
     clear = buttons[2];
 }
 
-function reshuffle(array, baseIndex) {
-    [array[baseIndex], array[baseIndex + 1]] = [array[baseIndex + 1], array[baseIndex]];
+function elemInDiv(div) {
+    let create = document.createElement('div');
+    create.className = "create";
+    if (generated.length > 0) {
+        Array.from(generated).forEach((el) => {
+            let elem = document.createElement('div');
+            elem.className = "block-array";
+            elem.innerHTML = el;
+            create.appendChild(elem);
+        });
+    }
+    div.append(create);
+}
+
+function reshuffle(array, base) {
+    [array[base], array[base + 1]] = [array[base + 1], array[base]];
 
     return array;
 }
 
-function getInputArray(min, max) {
+function getSourceArray(min, max) {
     let input = [];
     for (let i = min; i <= max; i++) {
         input.push(i);
@@ -100,23 +112,31 @@ function generateArray(source) {
     return gener;
 }
 
-function defaultGenerate() {
+function demoValue() {
     return Math.floor(Math.random() * 9);
 }
 
-function demoMin(min = 0) {
-    if (+min === 0 || isNaN(min)) {
+function demoMin(input) {
+    let min = +input[0].value;
+    if (+min == 0 || isNaN(min) || +min < 0 || min > 32) {
         min = DEFAULT_MIN;
     }
     return min;
 }
 
-function demoMax(min = 0, max = 0) {
-    if (+min === 0) {
+function demoMax(input, min = 0) {
+    let max = +input[1].value;
+    if (+min == 0) {
         min = DEFAULT_MIN;
     }
-    if (+max < min || isNaN(max)) {
+    if (+max <= min || isNaN(max) || max > 40) {
         max = min + DEMO_LENGTH;
     }
     return max;
+}
+
+function recreateArray(result) {
+    while (result.firstChild) {
+        result.removeChild(result.firstChild);
+    }
 }

@@ -12,22 +12,19 @@
 </head>
 
 <body>
-    <div class="input-value">
-        <p>Размер массива</p>
-        <label for="input-go">Минимальное число</label><br>
-        <input type="text" id="input-go"><br>
-        <label for="input-end">Максимальное число</label><br>
-        <input type="text" id="input-end"><br><br>
-        <button class="input-btn">Создать</button>
+    <div class="input">
+        <h2>Исходный массивчик</h2>
+        <input type="text" id="input-go" placeholder="min">
+        <span class="input-go">числа от 0 до 32</span>
+        <input type="text" id="input-end" placeholder="max">
+        <span class="input-end">числа от 0 до 40</span>
     </div>
-    <div class="value-gen">
-        <p>Сгенерированый массивчик</p>
-        <p class="value-gen-p"></p><br>
-    </div>
-    <div>
-        <button class="bubble-btn">пузырьковая сортировка</button>
+    <div class="btn">
+        <button class="create-btn">создать</button>
+        <button class="bubble-btn">пузырёк</button>
         <button class="clear-btn">убрать</button>
     </div>
+    <div id="result"></div>
 
     <script src="index.js"></script>
 </body>
