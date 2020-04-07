@@ -1,76 +1,86 @@
-const ERROR_SHORT = 'too short';
+const DEMO_LENGTH = 7; // длина демо массива
+const DEFAULT_MIN = demoValue(); // начало демо массива
 
 let generated = [];
-let button = document.getElementsByTagName('button');
-let deff = defaultGenerate();
 
-button[0].onclick = () => {
-    let min = Number(document.getElementById('input_go').value);
-    min = min != "" ? min : deff;
+initButtons(); // "берём" кнопки
 
-    let max = Number(document.getElementById('input_end').value);
-    max = max != "" ? max : (deff + 4);
+create.onclick = () => { // кнопка создать
+    let div = document.getElementById('result');
+    let inputValues = document.getElementsByTagName('input');
+    recreateArray(div); // очищаем место для нового массива
 
-    let generatedArray = document.getElementsByClassName('value_generate_p')[0];
-    let input = getInputArray(min, max);
+    min = demoMin(inputValues); // исключаем некорректные значения (демо-режим)
+    max = demoMax(inputValues, min); // исключаем некорректные значения (демо-режим)
+    generated = generateArray(getSourceArray(min, max)); // "перемешаный" массив
 
-    generated = generateArray(input);
-    generatedArray.innerHTML = generated;
+    elemInDiv(div); // выведем полученный массив
 }
 
-button[1].onclick = () => {
-    if (generated.length == 0) {
-        return alert('generate array before');
-    }
-    let elems = generated.length;
-    let flag = true;
-    let div = document.createElement('div');
+bubbleSort.onclick = () => { // кнопка пузырьковая сортировка
+    checkQueue(); // проверка на существование массива
+    let elems = generated.length; // колличество элементов в исходном массве
+    let needSort = true; // флаг для проходов сортировки
+    let div = document.getElementById('result'); // ход сортировки
 
-    while (flag) {
-        flag = false;
-        for (let i = 0; i < (elems - 1); i++) {
-            if (generated[i] > generated[i + 1]) {
-                let p = document.createElement('p');
-                p.className = "shuffling";
-                p.innerHTML = generated[i] + ' > ' + generated[i + 1];
-                p.append(' - shuffling');
+    while (needSort) { // непосредственно сортировка
+        let ul = document.createElement('ul'); // проход сортировки
+        ul.className = "sort-iter";
 
-                document.body.append(p);
-
-                flag = true;
-                reshuffle(generated, i);
+        needSort = false; // флаг для проходов сортировки
+        for (let i = 0; i < (elems - 1); i++) { // этапы прохода
+            if (generated[i] > generated[i + 1]) { // нужно ли переставить элементы?
+                needSort = true; // флаг для повторного прохода
+                sorting(ul, i, needSort); // перестановка и вывод этапа
             } else {
-                let p = document.createElement('p');
-                p.className = "sort_yet";
-                p.innerHTML = generated[i] + ' < ' + generated[i + 1];
-                p.append(' - ok');
-
-                document.body.append(p);
+                sorting(ul, i); // вывод этапа
             }
+            div.append(ul); // конец прохода
         }
     }
-    let p = document.createElement('p');
-    p.className = "sorted";
-    p.innerHTML = generated + " - sorted";
+    let end = document.createElement('div'); // вывод об окончании сортировки
+    end.className = "sorted"; // класс для css
 
-    document.body.append(p);
+    elemInDiv(div); // вывод отсортированного массива
 }
 
-function reshuffle(array, baseIndex) {
-    [array[baseIndex], array[baseIndex + 1]] = [array[baseIndex + 1], array[baseIndex]];
+function sorting(ul, i, need = false) {
+    let li = document.createElement('li');
+    if (need) {
+        reshuffle(generated, i);
 
-    return array;
+        li.className = "shuffling";
+        li.innerHTML = generated[i] + ' > ' + generated[i + 1];
+    } else {
+        li.className = "sort-yet";
+        li.innerHTML = generated[i] + ' < ' + generated[i + 1];
+    }
+    ul.append(li);
 }
 
-function checkInputValues(min, max) {
-    if (max <= min) {
+clear.onclick = () => {
+    let trash = document.getElementById('result');
 
-        return alert(ERROR_SHORT);
+    while (trash.firstChild) {
+        trash.removeChild(trash.firstChild);
     }
 }
 
-function getInputArray(min, max) {
-    checkInputValues(min, max);
+function initButtons() {
+    let buttons = document.getElementsByTagName('button');
+
+    create = buttons[0];
+    bubbleSort = buttons[1];
+    clear = buttons[2];
+}
+
+function recreateArray(result) {
+    while (result.firstChild) {
+        result.removeChild(result.firstChild);
+    }
+}
+
+function getSourceArray(min, max) {
     let input = [];
     for (let i = min; i <= max; i++) {
         input.push(i);
@@ -88,6 +98,51 @@ function generateArray(source) {
     return gener;
 }
 
-function defaultGenerate() {
+function elemInDiv(div) {
+    let create = document.createElement('div');
+    create.className = "create";
+    if (generated.length > 0) {
+        Array.from(generated).forEach((el) => {
+            let elem = document.createElement('div');
+            elem.className = "block-array";
+            elem.innerHTML = el;
+            create.appendChild(elem);
+        });
+    }
+    div.append(create);
+}
+
+function checkQueue() {
+    if (generated.length == 0) {
+        return alert('сначала создайте массив');
+    }
+}
+
+function reshuffle(array, base) {
+    [array[base], array[base + 1]] = [array[base + 1], array[base]];
+
+    return array;
+}
+
+function demoValue() {
     return Math.floor(Math.random() * 9);
+}
+
+function demoMin(input) {
+    let min = +input[0].value;
+    if (+min == 0 || isNaN(min) || +min < 0 || min > 32) {
+        min = DEFAULT_MIN;
+    }
+    return min;
+}
+
+function demoMax(input, min = 0) {
+    let max = +input[1].value;
+    if (+min == 0) {
+        min = DEFAULT_MIN;
+    }
+    if (+max <= min || isNaN(max) || max > 40) {
+        max = min + DEMO_LENGTH;
+    }
+    return max;
 }

@@ -1,0 +1,43 @@
+    /* DOM */
+    
+    *:focus {
+        outline: none;
+    }
+    
+    html {
+        font-family: Georgia, Times, "Times New Roman", serif;
+    }
+    
+    body {
+        background-color: rgba(1, 27, 71, 0.699);
+        margin: 30px;
+        color: blanchedalmond;
+    }
+    
+    button {
+        width: 100px;
+        height: 36px;
+        background-color: indigo;
+        color: azure;
+        border-radius: 7px;
+        margin-top: 14px;
+    }
+    
+    button:active {
+        background-color: green;
+    }
+    
+    input {
+        margin-top: 4px;
+    }
+    
+    li {
+        display: inline-block;
+        border: 2px solid rgb(14, 61, 92);
+        border-radius: 4px;
+        margin: 3px;
+    }
+    
+    h2 {
+        margin: 0;
+    }

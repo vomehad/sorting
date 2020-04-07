@@ -1,26 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_DOM.css">
+    <link rel="stylesheet" href="style_classes.css">
+    <link rel="stylesheet" href="style_ids.css">
+
     <title>Document</title>
 </head>
 
 <body>
-    <div class="input_value">
-        <input type="text" id="input_go">
-        <input type="text" id="input_end">
-        <button>генерить</button>
+    <div class="input">
+        <h2>Исходный массивчик</h2>
+        <input type="text" id="input-go" placeholder="min">
+        <span class="input-go">числа от 0 до 32</span>
+        <input type="text" id="input-end" placeholder="max">
+        <span class="input-end">числа от 0 до 40</span>
     </div>
-    <div class="value_generate">
-        <p>generated array:</p>
-        <p class="value_generate_p"></p>
+    <div class="btn">
+        <button class="create-btn">создать</button>
+        <button class="bubble-btn">пузырёк</button>
+        <button class="clear-btn">убрать</button>
     </div>
-    <div>
-        <button>bubble sort</button>
-    </div>
+    <div id="result"></div>
 
     <script src="index.js"></script>
 </body>
